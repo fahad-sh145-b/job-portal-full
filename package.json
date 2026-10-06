@@ -1,0 +1,12 @@
+{
+  "name": "job-portal-full",
+  "version": "1.0.0",
+  "description": "Job Portal Full Stack Application",
+  "main": "backend/server.js",
+  "scripts": {
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && node server.js"
+  }
+}

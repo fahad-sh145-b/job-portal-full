@@ -1,0 +1,54 @@
+:root{--ink:#10201c;--muted:#5d6b66;--paper:#f3f6f4;--card:#fff;--line:#d9e1dd;--brand:#0a6e5c;--brand-d:#07554a;--gold:#e8a317;--red:#c2412d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 Figtree,system-ui,sans-serif}
+h1,h2,h3,.brand{font-family:'Bricolage Grotesque',Figtree,sans-serif;margin:0 0 .4rem}
+h1{font-size:2rem}h3{font-size:1.1rem}
+a{color:var(--brand)}
+.bar{display:flex;align-items:center;gap:1.5rem;padding:.8rem 1.5rem;background:var(--brand);color:#fff}
+.brand{font-size:1.3rem;margin:0}
+.bar nav{display:flex;gap:1rem;flex:1}
+.bar nav a{color:#d7efe9;text-decoration:none;padding:.3rem 0;border-bottom:2px solid transparent}
+.bar nav a.active{color:#fff;border-color:var(--gold)}
+.who{display:flex;align-items:center;gap:.8rem}
+main{max-width:1100px;margin:0 auto;padding:1.5rem}
+button,input,select,textarea{font:inherit}
+input,select,textarea{width:100%;padding:.55rem .7rem;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+label{display:block;font-weight:500;font-size:.9rem}
+label input,label select,label textarea{margin-top:.25rem;font-weight:400}
+label small{display:block;color:var(--muted);font-weight:400;margin-top:.2rem}
+button{cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:6px;padding:.5rem .9rem}
+.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+.primary:hover{background:var(--brand-d)}.primary:disabled{opacity:.6}
+.ghost{background:transparent}.bar .ghost{color:#fff;border-color:#ffffff66}
+.danger{color:var(--red);border-color:var(--red)}
+.panel,.card,.stat,.scroll{background:var(--card);border:1px solid var(--line);border-radius:8px}
+.panel{padding:1.4rem;display:grid;gap:.9rem}
+.auth{max-width:420px;margin:2rem auto}.alt{margin:0;text-align:center}
+.card{padding:1rem 1.2rem}
+.row{display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+.stack{display:grid;gap:.8rem;margin-top:1rem}
+.muted,small{color:var(--muted)}.muted{margin:0}
+.desc{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin:.5rem 0}
+.tags{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0 0}
+.tags span{background:#e6efec;border-radius:4px;padding:.1rem .5rem;font-size:.85rem}
+.filters{display:flex;gap:.6rem;margin:1rem 0}.filters select{max-width:170px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin:1rem 0}
+.stat{padding:.9rem 1.1rem}.stat b{display:block;font:700 2rem 'Bricolage Grotesque',sans-serif;color:var(--brand)}
+.tabs{display:flex;gap:.4rem;margin:1rem 0;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;text-transform:capitalize}
+.tabs .on{border-color:var(--gold);font-weight:600}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{padding:.7rem .9rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.85rem;color:var(--muted);font-weight:600}
+.badge{display:inline-block;width:auto;padding:.15rem .6rem;border-radius:99px;font-size:.85rem;font-weight:600;text-transform:capitalize;border:0}
+.pending{background:#fdf0cf;color:#7a5600}.shortlisted{background:#dbe9ff;color:#1c4a9c}
+.accepted{background:#d6f0e4;color:#0a5b3a}.rejected{background:#f9dcd6;color:#8f2a1a}
+.msg{padding:.6rem .9rem;border-radius:6px;cursor:pointer}.ok{background:#d6f0e4}.err{background:#f9dcd6}
+.empty{padding:2rem;text-align:center;color:var(--muted)}
+.form2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:1rem}.form2 h2,.wide{grid-column:1/-1}.form2 .primary{justify-self:start}
+.overlay{position:fixed;inset:0;background:#0008;display:grid;place-items:center;padding:1rem}
+.modal{width:100%;max-width:480px}
+@media(max-width:600px){.bar{flex-wrap:wrap;gap:.6rem}.filters{flex-direction:column}.filters select{max-width:none}}
