@@ -53,7 +53,9 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
     console.log('Server is live')
-})
+});
+
+module.exports = app;
 
 
 
