@@ -15,15 +15,24 @@
   ],
   "routes": [
     {
-      "src": "/(user|company|job|application)(.*)",
+      "src": "/user/(.*)",
       "dest": "backend/server.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/company/(.*)",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "/job/(.*)",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "/application/(.*)",
+      "dest": "backend/server.js"
     },
     {
       "src": "/(.*)",
-      "dest": "backend/server.js"
+      "dest": "frontend/$1"
     }
   ]
 }
