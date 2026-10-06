@@ -1,25 +1,95 @@
-# Job Portal (backend + frontend)
+# 💼 Full-Stack Job Portal Application
 
-## 1. Backend
-cd backend
-cp .env.example .env      # fill MONGODB_URL, JWT_SECRET, WhatsApp keys
-npm install
-npm run dev               # http://localhost:4000
+A modern, responsive, full-stack MERN (MongoDB, Express, React, Node.js) Job Portal application that connects **Recruiters (Employers)** and **Job Seekers (Candidates)** with real-time automated email notifications and streamlined hiring dashboards.
 
-## 2. Frontend
-cd frontend
-cp .env.example .env      # VITE_API_URL=http://localhost:4000
-npm install
-npm run dev               # http://localhost:5173
+---
 
-## Flow
-- Sign up as "Hire people" -> Dashboard -> add a company -> post a job.
-- Sign up as "Find a job" (with WhatsApp number + country code) -> apply.
-- Application appears on the dashboard within 15 seconds; candidate gets a WhatsApp confirmation.
+## 🌟 Key Features
 
-## WhatsApp (Meta Cloud API)
-1. developers.facebook.com -> create app -> add WhatsApp product.
-2. Copy the temporary token (WHATSAPP_TOKEN) and Phone number ID (WHATSAPP_PHONE_ID).
-3. In WhatsApp Manager create a template named `application_received` (category Utility) with body:
-   Hi {{1}}, your application for {{2}} at {{3}} was submitted successfully.
-4. While testing, add your own number as an allowed recipient in the API Setup page.
+### 👤 **For Job Seekers (Candidates)**
+- **Job Search & Filters:** Browse open job listings filtered by title, company, location, or job type (Full-time, Part-time, Remote, Internship).
+- **One-Click Application:** Apply for jobs instantly with custom resume and cover letter links.
+- **Application Tracker:** View status of submitted applications (`Pending`, `Shortlisted`, `Accepted`, `Rejected`).
+- **Automated Gmail Notifications:** Receive instant confirmation emails when applying and when application status is updated by recruiters.
+
+### 🏢 **For Recruiters (Employers)**
+- **Company Management:** Create and manage company profiles.
+- **Job Posting:** Post new job openings with custom titles, salary ranges, experience criteria, and application deadlines.
+- **Hiring Dashboard:** Comprehensive applicant management panel to review candidates and update application statuses.
+- **Recruiter Alerts:** Receive automated email notifications whenever a candidate applies to your job listing.
+
+### ⚡ **Architecture & System Highlights**
+- **Single-Port Unified Server:** Frontend UI (React + Vite) and Backend API (Node + Express) run seamlessly on a single port (`http://localhost:4000`).
+- **Real-Time SMTP Email System:** Automated HTML emails via Nodemailer with direct clickable login links.
+- **Cloud Database:** Powered by MongoDB Atlas.
+- **Responsive Design:** 100% responsive across Mobile, Tablet, and Desktop screens.
+- **Vercel Ready:** Pre-configured `vercel.json` for serverless cloud deployment.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React 18, Vite, React Router DOM, CSS Grid & Flexbox
+- **Backend:** Node.js, Express.js, Mongoose, JWT Authentication, Nodemailer
+- **Database:** MongoDB Atlas (Cloud Database)
+- **Deployment:** Vercel
+
+---
+
+## 🚀 Quick Start Guide
+
+### 1️⃣ **Clone the Repository**
+```bash
+git clone https://github.com/fahad-sh145-b/job-portal-full.git
+cd job-portal-full
+```
+
+### 2️⃣ **Environment Setup**
+Create a `.env` file inside the `backend/` directory:
+
+```env
+PORT=4000
+MONGODB_URL=your_mongodb_atlas_connection_string
+JWT_SECRET=your_jwt_secret_key
+
+# Gmail SMTP Email Notifications (Optional for real email delivery)
+EMAIL_USER=your_gmail_address@gmail.com
+EMAIL_PASS=your_gmail_app_password
+```
+
+Create a `.env` file inside the `frontend/` directory:
+
+```env
+VITE_API_URL=http://localhost:4000
+```
+
+### 3️⃣ **Install & Run Application**
+Run a single command from the root folder to install dependencies and launch both frontend and backend:
+
+```bash
+# Install all dependencies (Root, Backend & Frontend)
+npm run postinstall
+
+# Build Frontend Bundle
+npm run build
+
+# Start Full Application (http://localhost:4000)
+npm start
+```
+
+Open **`http://localhost:4000`** in your browser!
+
+---
+
+## 🌐 Deploy to Vercel
+
+This repository is pre-configured with `vercel.json` for one-click Vercel deployment:
+
+1. Import the repository on **[Vercel](https://vercel.com/new)**.
+2. Add Environment Variables (`MONGODB_URL`, `JWT_SECRET`, `EMAIL_USER`, `EMAIL_PASS`).
+3. Click **Deploy**!
+
+---
+
+## 📄 License
+This project is licensed under the MIT License.
