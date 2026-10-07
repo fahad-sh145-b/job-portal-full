@@ -3,8 +3,7 @@
 A modern, responsive, full-stack MERN (MongoDB, Express, React, Node.js) Job Portal application that connects **Recruiters (Employers)** and **Job Seekers (Candidates)** with real-time automated email notifications and streamlined hiring dashboards.
 
 ### 🌐 **Live Production Link:**
-🔗 **[https://job-portal-full-ckl8.vercel.app](https://job-portal-full-ckl8.vercel.app)**  
-🔑 **Direct Login Page:** **[https://job-portal-full-ckl8.vercel.app/login](https://job-portal-full-ckl8.vercel.app/login)**
+🔗 **[https://job-portal-full-ckl8.vercel.app](https://job-portal-full-ckl8.vercel.app)**
 
 ---
 
@@ -24,7 +23,7 @@ A modern, responsive, full-stack MERN (MongoDB, Express, React, Node.js) Job Por
 
 ### ⚡ **Architecture & System Highlights**
 - **Single-Port Unified Server:** Frontend UI (React + Vite) and Backend API (Node + Express) run seamlessly together.
-- **Real-Time SMTP Email System:** Automated HTML emails via Nodemailer with direct clickable login links pointing to `https://job-portal-full-ckl8.vercel.app/login`.
+- **Real-Time SMTP Email System:** Automated HTML emails via Nodemailer with direct clickable login links.
 - **Cloud Database:** Powered by MongoDB Atlas.
 - **Responsive Design:** 100% responsive across Mobile, Tablet, and Desktop screens.
 - **Vercel Deployed:** Live production serverless architecture.
@@ -90,8 +89,7 @@ Open **`http://localhost:4000`** in your browser!
 
 This project is deployed live on Vercel:
 
-- **Main App:** [https://job-portal-full-ckl8.vercel.app](https://job-portal-full-ckl8.vercel.app)
-- **Login Portal:** [https://job-portal-full-ckl8.vercel.app/login](https://job-portal-full-ckl8.vercel.app/login)
+- **Live Application:** [https://job-portal-full-ckl8.vercel.app](https://job-portal-full-ckl8.vercel.app)
 
 ---
 
