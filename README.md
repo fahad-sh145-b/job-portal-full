@@ -2,6 +2,10 @@
 
 A modern, responsive, full-stack MERN (MongoDB, Express, React, Node.js) Job Portal application that connects **Recruiters (Employers)** and **Job Seekers (Candidates)** with real-time automated email notifications and streamlined hiring dashboards.
 
+### 🌐 **Live Production Link:**
+🔗 **[https://job-portal-full-ckl8.vercel.app](https://job-portal-full-ckl8.vercel.app)**  
+🔑 **Direct Login Page:** **[https://job-portal-full-ckl8.vercel.app/login](https://job-portal-full-ckl8.vercel.app/login)**
+
 ---
 
 ## 🌟 Key Features
@@ -19,11 +23,11 @@ A modern, responsive, full-stack MERN (MongoDB, Express, React, Node.js) Job Por
 - **Recruiter Alerts:** Receive automated email notifications whenever a candidate applies to your job listing.
 
 ### ⚡ **Architecture & System Highlights**
-- **Single-Port Unified Server:** Frontend UI (React + Vite) and Backend API (Node + Express) run seamlessly on a single port (`http://localhost:4000`).
-- **Real-Time SMTP Email System:** Automated HTML emails via Nodemailer with direct clickable login links.
+- **Single-Port Unified Server:** Frontend UI (React + Vite) and Backend API (Node + Express) run seamlessly together.
+- **Real-Time SMTP Email System:** Automated HTML emails via Nodemailer with direct clickable login links pointing to `https://job-portal-full-ckl8.vercel.app/login`.
 - **Cloud Database:** Powered by MongoDB Atlas.
 - **Responsive Design:** 100% responsive across Mobile, Tablet, and Desktop screens.
-- **Vercel Ready:** Pre-configured `vercel.json` for serverless cloud deployment.
+- **Vercel Deployed:** Live production serverless architecture.
 
 ---
 
@@ -36,7 +40,7 @@ A modern, responsive, full-stack MERN (MongoDB, Express, React, Node.js) Job Por
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Local Quick Start Guide
 
 ### 1️⃣ **Clone the Repository**
 ```bash
@@ -51,20 +55,21 @@ Create a `.env` file inside the `backend/` directory:
 PORT=4000
 MONGODB_URL=your_mongodb_atlas_connection_string
 JWT_SECRET=your_jwt_secret_key
+APP_URL=https://job-portal-full-ckl8.vercel.app
 
-# Gmail SMTP Email Notifications (Optional for real email delivery)
-EMAIL_USER=your_gmail_address@gmail.com
+# Gmail SMTP Email Notifications
+EMAIL_USER=shaikhbashiruddinmohdhajishaik@gmail.com
 EMAIL_PASS=your_gmail_app_password
 ```
 
 Create a `.env` file inside the `frontend/` directory:
 
 ```env
-VITE_API_URL=http://localhost:4000
+VITE_API_URL=https://job-portal-full-ckl8.vercel.app
 ```
 
 ### 3️⃣ **Install & Run Application**
-Run a single command from the root folder to install dependencies and launch both frontend and backend:
+Run a single command from the root folder to launch locally:
 
 ```bash
 # Install all dependencies (Root, Backend & Frontend)
@@ -73,7 +78,7 @@ npm run postinstall
 # Build Frontend Bundle
 npm run build
 
-# Start Full Application (http://localhost:4000)
+# Start Full Application
 npm start
 ```
 
@@ -81,13 +86,12 @@ Open **`http://localhost:4000`** in your browser!
 
 ---
 
-## 🌐 Deploy to Vercel
+## 🌐 Live Production Deployment
 
-This repository is pre-configured with `vercel.json` for one-click Vercel deployment:
+This project is deployed live on Vercel:
 
-1. Import the repository on **[Vercel](https://vercel.com/new)**.
-2. Add Environment Variables (`MONGODB_URL`, `JWT_SECRET`, `EMAIL_USER`, `EMAIL_PASS`).
-3. Click **Deploy**!
+- **Main App:** [https://job-portal-full-ckl8.vercel.app](https://job-portal-full-ckl8.vercel.app)
+- **Login Portal:** [https://job-portal-full-ckl8.vercel.app/login](https://job-portal-full-ckl8.vercel.app/login)
 
 ---
 
