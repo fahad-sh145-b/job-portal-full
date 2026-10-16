@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 // Base URL of the JobPortal application
-const APP_URL = process.env.APP_URL || 'http://localhost:4000';
+const APP_URL = process.env.APP_URL || 'http://localhost:4500';
 const LOGIN_URL = `${APP_URL}/login`;
 
 // Configure Email Transporter
@@ -14,8 +14,8 @@ function getTransporter() {
             port: parseInt(EMAIL_PORT || '587'),
             secure: EMAIL_PORT === '465',
             auth: {
-                user: EMAIL_USER,
-                pass: EMAIL_PASS
+                user: EMAIL_USER.trim(),
+                pass: EMAIL_PASS.replace(/\s+/g, '')
             }
         });
     }

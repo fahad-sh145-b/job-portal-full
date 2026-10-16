@@ -36,6 +36,8 @@ app.use('/job', jobRoutes);
 app.use('/application', applicationRoutes);
 
 const path = require('path');
+// Serve uploaded resume files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // SPA Fallback for frontend

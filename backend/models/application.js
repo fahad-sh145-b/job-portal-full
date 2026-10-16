@@ -36,6 +36,10 @@ const applicationSchema = new mongoose.Schema({
     }
 );
 
+// Compound unique index: Guarantees at the database level that
+// a user can only apply to the same job once (prevents double-click bugs)
+applicationSchema.index({ job: 1, applicant: 1 }, { unique: true });
+
 const Application = mongoose.model("Application", applicationSchema);
 
 module.exports = Application;

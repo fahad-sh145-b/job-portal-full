@@ -4,17 +4,17 @@ const router = express.Router();
 
 console.log("Application route file loaded");
 
-const { jwtAuthMiddleware } = require('../jwt');
+const { jwtAuthMiddleware, checkRole } = require('../jwt');
 const Application = require('../models/application');
 const Job = require('../models/job');
 const User = require('../models/user');
 const Company = require('../models/company');
-const { sendApplicationWhatsApp } = require('../whatsapp');
-const { sendApplicationEmail, sendRecruiterAlertEmail, sendStatusUpdateEmail } = require('../mailer');
+const { notifyApplicationSubmitted, notifyStatusUpdated } = require('../notificationClient');
+const uploadResume = require('../uploadMiddleware');
 
 
-// 1. Apply for a job
-router.post('/apply/:jobId', jwtAuthMiddleware, async (req, res) => {
+// 1. Apply for a job (Supports JSON or Multipart File Upload)
+router.post('/apply/:jobId', jwtAuthMiddleware, uploadResume.single('resumeFile'), async (req, res) => {
     try {
         const jobId = req.params.jobId;
 
@@ -37,10 +37,13 @@ router.post('/apply/:jobId', jwtAuthMiddleware, async (req, res) => {
             });
         }
 
+        // Support both uploaded file and direct URL text
+        const resumeUrl = req.file ? `/uploads/resumes/${req.file.filename}` : (req.body.resume || '');
+
         const application = new Application({
             job: job._id,
             applicant: req.user.id,
-            resume: req.body.resume || '',
+            resume: resumeUrl,
             coverletter: req.body.coverletter || ''
         });
 
@@ -51,52 +54,30 @@ router.post('/apply/:jobId', jwtAuthMiddleware, async (req, res) => {
         const recruiter = await User.findById(job.recruiter);
         const companyName = job.company?.name || 'the company';
 
-        // 1. Send Email Notification to Candidate
-        try {
-            if (user?.email) {
-                await sendApplicationEmail({
-                    email: user.email,
-                    name: user.name,
-                    jobTitle: job.title,
-                    company: companyName
-                });
-            }
-        } catch (e) { console.log('Candidate Email error:', e.message); }
+        // Dispatches to independent Notification Microservice (NON-BLOCKING: ~1ms!)
+        notifyApplicationSubmitted({
+            candidateEmail: user?.email,
+            candidateName: user?.name,
+            candidatePhone: user?.phone,
+            recruiterEmail: recruiter?.email,
+            recruiterName: recruiter?.name,
+            jobTitle: job.title,
+            companyName
+        });
 
-        // 2. Send Email Notification to Recruiter
-        try {
-            if (recruiter?.email) {
-                await sendRecruiterAlertEmail({
-                    recruiterEmail: recruiter.email,
-                    recruiterName: recruiter.name,
-                    candidateName: user.name,
-                    candidateEmail: user.email,
-                    jobTitle: job.title,
-                    company: companyName
-                });
-            }
-        } catch (e) { console.log('Recruiter Email error:', e.message); }
-
-        // 2. WhatsApp confirmation
-        let whatsapp = 'failed';
-        try {
-            if (user?.phone) {
-                whatsapp = await sendApplicationWhatsApp({
-                    phone: user.phone,
-                    name: user.name,
-                    jobTitle: job.title,
-                    company: companyName
-                });
-            }
-        } catch (e) { console.log('WhatsApp error:', e.message); }
-
+        // Instant response back to candidate! No more waiting 3 seconds!
         return res.status(201).json({
-            message: `You have successfully applied to ${job.title} at ${companyName}! Confirmation notification sent.`,
-            data: response,
-            whatsapp
+            message: `You have successfully applied to ${job.title} at ${companyName}! Confirmation notification dispatched.`,
+            data: response
         });
 
     } catch (err) {
+        // If MongoDB rejects a double-click duplicate (E11000)
+        if (err.code === 11000) {
+            return res.status(409).json({
+                message: 'You have already applied for this job'
+            });
+        }
         console.log(err);
         return res.status(500).json({
             message: err.message
@@ -128,8 +109,8 @@ router.get('/my', jwtAuthMiddleware, async (req, res) => {
 });
 
 
-// 3. Get applications received for the recruiter's jobs
-router.get('/received', jwtAuthMiddleware, async (req, res) => {
+// 3. Get applications received for the recruiter's jobs (Recruiter/Admin only)
+router.get('/received', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
     try {
         const jobs = await Job.find({
             recruiter: req.user.id
@@ -158,8 +139,8 @@ router.get('/received', jwtAuthMiddleware, async (req, res) => {
 });
 
 
-// 4. Update application status
-router.put('/:id/status', jwtAuthMiddleware, async (req, res) => {
+// 4. Update application status (Recruiter/Admin only)
+router.put('/:id/status', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
     try {
         const allowedStatuses = [
             'pending',
@@ -198,12 +179,12 @@ router.put('/:id/status', jwtAuthMiddleware, async (req, res) => {
         application.status = status;
         await application.save();
 
-        // Send Email notification for status update
-        try {
+        // Dispatch status update event to Notification Microservice (Non-blocking)
+        (async () => {
             const applicant = await User.findById(application.applicant);
             const populatedJob = await Job.findById(application.job).populate('company', 'name');
             if (applicant?.email) {
-                await sendStatusUpdateEmail({
+                notifyStatusUpdated({
                     email: applicant.email,
                     name: applicant.name,
                     jobTitle: populatedJob?.title || 'Job',
@@ -211,7 +192,7 @@ router.put('/:id/status', jwtAuthMiddleware, async (req, res) => {
                     status: status
                 });
             }
-        } catch (e) { console.log('Status update notification error:', e.message); }
+        })().catch(e => console.log('Status notification dispatch error:', e.message));
 
         return res.status(200).json({
             message: 'Application status updated successfully',
@@ -226,4 +207,4 @@ router.put('/:id/status', jwtAuthMiddleware, async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = router;

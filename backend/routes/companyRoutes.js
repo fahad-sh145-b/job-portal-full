@@ -2,12 +2,13 @@ const express = require('express');
 
 const router = express.Router();
 
-const { jwtAuthMiddleware, generatetoken } = require('../jwt')
+const { jwtAuthMiddleware, checkRole } = require('../jwt');
 
 const Company = require('../models/company');
 
 
-router.post('/register', jwtAuthMiddleware, async (req, res) => {
+// Only employers and admins can register a company
+router.post('/register', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
     try {
         const company = req.body;
 
@@ -91,7 +92,7 @@ router.get('/:id', jwtAuthMiddleware, async (req, res) => {
 })
 
 
-router.put('/:id', jwtAuthMiddleware, async (req, res) => {
+router.put('/:id', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
     try {
 
         const companyId = req.params.id;
@@ -106,7 +107,7 @@ router.put('/:id', jwtAuthMiddleware, async (req, res) => {
         });
 
         if (!response) {
-            return res.status(401).json({ message: 'company not found' })
+            return res.status(404).json({ message: 'company not found' });
         }
 
         console.log('company updated');
@@ -123,7 +124,7 @@ router.put('/:id', jwtAuthMiddleware, async (req, res) => {
 
 
 
-router.delete('/:id', jwtAuthMiddleware, async (req, res) => {
+router.delete('/:id', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
     try {
 
         const companyId = req.params.id;
@@ -133,7 +134,7 @@ router.delete('/:id', jwtAuthMiddleware, async (req, res) => {
         const response = await Company.findByIdAndDelete(companyId)
 
         if (!response) {
-            return res.status(401).json({ message: 'company not found' })
+            return res.status(404).json({ message: 'company not found' });
         }
 
         console.log('company deleted');

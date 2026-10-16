@@ -2,14 +2,15 @@ const express = require('express');
 
 const router = express.Router();
 
-const { jwtAuthMiddleware, generateToken } = require('../jwt');
+const { jwtAuthMiddleware, checkRole } = require('../jwt');
 
 const Job = require('../models/job');
 
 const Company = require('../models/company');
 
 
-router.post('/apply', jwtAuthMiddleware, async (req, res) => {
+// Only employers and admins can post jobs
+router.post('/apply', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
 
     try {
 
@@ -51,27 +52,58 @@ router.post('/apply', jwtAuthMiddleware, async (req, res) => {
 })
 
 
-router.get('/', jwtAuthMiddleware, async (req, res) => {
-
+// PUBLIC ROUTE: Anyone (even logged out users) can view available jobs
+// Supports search queries: ?q=developer&type=full-time&page=1&limit=10
+router.get('/', async (req, res) => {
     try {
+        const { q, type, page, limit } = req.query;
 
-        const response = await Job.find()
+        const filter = {};
+        if (type) {
+            filter.jobType = type;
+        }
+        if (q) {
+            filter.$or = [
+                { title: { $regex: q, $options: 'i' } },
+                { description: { $regex: q, $options: 'i' } },
+                { location: { $regex: q, $options: 'i' } }
+            ];
+        }
+
+        // Optional Pagination support (for scaling to thousands of jobs)
+        if (page || limit) {
+            const pageNum = Math.max(1, parseInt(page) || 1);
+            const limitNum = Math.max(1, parseInt(limit) || 10);
+            const total = await Job.countDocuments(filter);
+
+            const jobs = await Job.find(filter)
+                .populate('company')
+                .populate('recruiter', 'name email')
+                .sort({ createdAt: -1 })
+                .skip((pageNum - 1) * limitNum)
+                .limit(limitNum);
+
+            return res.status(200).json({
+                response: jobs,
+                total,
+                page: pageNum,
+                totalPages: Math.ceil(total / limitNum)
+            });
+        }
+
+        // Default: Fetch all matching jobs (backward-compatible)
+        const response = await Job.find(filter)
             .populate('company')
-            .populate('recruiter', 'name email');
-
-        console.log('job fetched');
+            .populate('recruiter', 'name email')
+            .sort({ createdAt: -1 });
 
         return res.status(200).json({ response });
 
-
-
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ message: 'Internal server error' });
     }
-
-})
+});
 
 
 
@@ -96,7 +128,7 @@ router.get('/:id', jwtAuthMiddleware, async (req, res) => {
     }
 })
 
-router.put('/:id', jwtAuthMiddleware, async (req, res) => {
+router.put('/:id', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
 
 
     try {
@@ -125,7 +157,7 @@ router.put('/:id', jwtAuthMiddleware, async (req, res) => {
 
 
 
-router.delete('/:id', jwtAuthMiddleware, async (req, res) => {
+router.delete('/:id', jwtAuthMiddleware, checkRole(['employer', 'admin']), async (req, res) => {
 
 
     try {
@@ -135,12 +167,12 @@ router.delete('/:id', jwtAuthMiddleware, async (req, res) => {
         const response = await Job.findByIdAndDelete(job);
 
         if (!response) {
-            return res.status({ message: 'job not found' })
+            return res.status(404).json({ message: 'job not found' });
         }
 
         console.log('job deleted');
 
-        return res.status(200).json('job deleted successfully')
+        return res.status(200).json({ message: 'job deleted successfully' });
     }
 
     catch (err) {

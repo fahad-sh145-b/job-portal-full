@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const BASE = import.meta.env.VITE_API_URL || '';
 
 export const getAuth = () => JSON.parse(localStorage.getItem('auth') || 'null');
 export const setAuth = (a) => (a ? localStorage.setItem('auth', JSON.stringify(a)) : localStorage.removeItem('auth'));
