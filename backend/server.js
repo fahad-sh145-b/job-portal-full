@@ -1,10 +1,14 @@
+const path = require('path');
+const fs = require('fs');
+
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
 app.use(cors());
 app.use(express.json());
-
-require('dotenv').config();
 
 const db = require('./db.js');
 
@@ -36,14 +40,20 @@ app.use('/job', jobRoutes);
 app.use('/application', applicationRoutes);
 
 const path = require('path');
+const fs = require('fs');
+
+// Automatically locate the frontend dist folder (works both inside Docker and locally)
+const frontendDist = fs.existsSync(path.join(__dirname, 'dist', 'index.html'))
+    ? path.join(__dirname, 'dist')
+    : path.join(__dirname, '../frontend/dist');
+
 // Serve uploaded resume files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(frontendDist));
 
 // SPA Fallback for frontend
 app.use((req, res) => {
-    const indexPath = path.join(__dirname, '../frontend/dist/index.html');
-    const fs = require('fs');
+    const indexPath = path.join(frontendDist, 'index.html');
     if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
     } else {
@@ -53,9 +63,11 @@ app.use((req, res) => {
 
 
 
-app.listen(PORT, () => {
-    console.log('Server is live')
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server is live on port ${PORT}`);
+    });
+}
 
 module.exports = app;
 

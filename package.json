@@ -6,9 +6,13 @@
   "scripts": {
     "postinstall": "cd backend && npm install && cd ../frontend && npm install && cd ../notification-service && npm install",
     "build": "cd frontend && npm run build",
-    "start": "cd backend && node server.js",
+    "start": "concurrently --names \"BACKEND,NOTIF\" -c \"cyan,magenta\" \"npm run start:backend\" \"npm run start:notifications\"",
+    "dev": "concurrently --names \"BACKEND,NOTIF\" -c \"cyan,magenta\" \"npm run start:backend\" \"npm run start:notifications\"",
     "start:backend": "cd backend && node server.js",
     "start:notifications": "cd notification-service && node server.js",
-    "dev": "cd backend && node server.js"
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
   }
 }

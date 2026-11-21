@@ -2,16 +2,31 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, 'uploads', 'resumes');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+// Serverless environments (like Vercel/AWS Lambda) have a strictly read-only filesystem except /tmp
+const isVercel = Boolean(process.env.VERCEL);
+const uploadDir = isVercel
+    ? path.join('/tmp', 'uploads', 'resumes')
+    : path.join(__dirname, 'uploads', 'resumes');
+
+try {
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+} catch (err) {
+    console.warn('⚠️ [UPLOAD] Could not create local upload directory:', err.message);
 }
 
 // 1. Storage engine: Saves file to disk with unique timestamp name
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadDir);
+        try {
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            cb(null, uploadDir);
+        } catch (err) {
+            cb(err, uploadDir);
+        }
     },
     filename: (req, file, cb) => {
         // Sanitize filename and prepend timestamp

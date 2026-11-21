@@ -1,0 +1,41 @@
+services:
+  # 1. Main Job Portal Backend & Frontend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: jobportal-backend
+    ports:
+      - "4500:4500"
+    environment:
+      - PORT=4500
+      - MONGODB_URL=mongodb+srv://fahad:09876@cluster0.t1jwt77.mongodb.net/job-portal
+      - JWT_SECRET=54321
+      # Notice: In Docker, services talk using their service name as hostname!
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5001
+      - APP_URL=http://localhost:4500
+      - EMAIL_USER=shaikhbashiruddinmohdhajishaik@gmail.com
+      - EMAIL_PASS=utgxeotuvyhytcnh
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_PORT=587
+    depends_on:
+      - notification-service
+    restart: unless-stopped
+
+  # 2. Notification Microservice
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: jobportal-notifications
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - APP_URL=http://localhost:4500
+      - EMAIL_USER=shaikhbashiruddinmohdhajishaik@gmail.com
+      - EMAIL_PASS=utgxeotuvyhytcnh
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_PORT=587
+    restart: unless-stopped
+ 

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const path = require('path');
 
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 require('dotenv').config();
 
 const mongodbURL = process.env.MONGODB_URL || process.env.mongodbURL || 'mongodb://127.0.0.1:27017/jobportal';
@@ -23,4 +25,4 @@ db.on('error', (err) => {
     console.log('MongoDB Connection Error:', err.message);
 });
 
-module.exports = db;
+module.exports = db;

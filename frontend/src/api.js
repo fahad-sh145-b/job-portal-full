@@ -11,7 +11,9 @@ export async function api(path, { method = 'GET', body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.message || data.error || 'Request failed');
+  if (!res.ok) {
+    throw new Error(data.message || data.error || (res.status >= 500 ? `Server error (${res.status}): Function or database error` : 'Request failed'));
+  }
   return data;
 }
 
