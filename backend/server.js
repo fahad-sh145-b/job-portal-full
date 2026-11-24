@@ -10,11 +10,22 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-const db = require('./db.js');
+const { connectDB, db } = require('./db.js');
 
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+
+// Ensure MongoDB connection is ready before processing API requests (essential for Vercel serverless)
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        console.error('Database connection failed:', err.message);
+        return res.status(500).json({ message: 'Database connection failed: ' + err.message });
+    }
+});
 
 const PORT = process.env.PORT || 4000
 

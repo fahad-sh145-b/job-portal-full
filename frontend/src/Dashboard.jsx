@@ -18,16 +18,32 @@ export default function Dashboard() {
   const [synced, setSynced] = useState(null);
 
   const loadApps = useCallback(async () => {
-    try { setApps((await api('/application/received')).data); setSynced(new Date()); }
-    catch (e) { setNote({ err: e.message }); }
-  }, []);
-  const loadAll = useCallback(async () => {
     try {
-      const [j, c] = await Promise.all([api('/job'), api('/company')]);
-      setJobs(j.response.filter((x) => x.recruiter?._id === user._id));
-      setCompanies(c.company.filter((x) => x.recruiter?._id === user._id));
-    } catch (e) { setNote({ err: e.message }); }
-  }, [user._id]);
+      const res = await api('/application/received');
+      setApps(res.data || []);
+      setSynced(new Date());
+    } catch (e) {
+      setNote({ err: e.message });
+    }
+  }, []);
+
+  const loadAll = useCallback(async () => {
+    const currentId = user?._id || user?.id;
+    if (!currentId) return;
+    try {
+      const [j, c] = await Promise.all([
+        api('/job').catch((err) => { console.error('Jobs fetch error:', err); return { response: [] }; }),
+        api('/company').catch((err) => { console.error('Companies fetch error:', err); return { company: [] }; })
+      ]);
+      const uid = String(currentId);
+      const allJobs = j?.response || [];
+      const allCompanies = c?.company || [];
+      setJobs(allJobs.filter((x) => String(x.recruiter?._id || x.recruiter) === uid));
+      setCompanies(allCompanies.filter((x) => String(x.recruiter?._id || x.recruiter) === uid));
+    } catch (e) {
+      setNote({ err: e.message });
+    }
+  }, [user]);
 
   // New applications show up automatically: refresh every 15 seconds
   useEffect(() => {

@@ -15,7 +15,7 @@
   ],
   "routes": [
     {
-      "src": "/(user|company|job|application)(.*)",
+      "src": "/(user|company|job|application|uploads)(.*)",
       "dest": "backend/server.js"
     },
     {
