@@ -10,7 +10,9 @@ if (!process.env.MONGODB_URL && !process.env.mongodbURL) {
     console.warn('⚠️ [DB WARNING] MONGODB_URL is not set in backend/.env. Attempting local connection: mongodb://127.0.0.1:27017/jobportal');
 }
 
-mongoose.connect(mongodbURL).catch(err => {
+mongoose.connect(mongodbURL, {
+    serverSelectionTimeoutMS: 5000
+}).catch(err => {
     console.log('❌ Initial MongoDB connection error:', err.message);
     console.log('👉 Tip: Add your MongoDB Atlas connection string to backend/.env: MONGODB_URL=mongodb+srv://...');
 });
