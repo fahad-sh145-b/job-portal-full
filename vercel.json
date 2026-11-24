@@ -15,19 +15,7 @@
   ],
   "routes": [
     {
-      "src": "/user/(.*)",
-      "dest": "backend/server.js"
-    },
-    {
-      "src": "/company/(.*)",
-      "dest": "backend/server.js"
-    },
-    {
-      "src": "/job/(.*)",
-      "dest": "backend/server.js"
-    },
-    {
-      "src": "/application/(.*)",
+      "src": "/(user|company|job|application)(.*)",
       "dest": "backend/server.js"
     },
     {
