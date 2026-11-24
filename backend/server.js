@@ -39,9 +39,6 @@ app.use('/job', jobRoutes);
 
 app.use('/application', applicationRoutes);
 
-const path = require('path');
-const fs = require('fs');
-
 // Automatically locate the frontend dist folder (works both inside Docker and locally)
 const frontendDist = fs.existsSync(path.join(__dirname, 'dist', 'index.html'))
     ? path.join(__dirname, 'dist')
