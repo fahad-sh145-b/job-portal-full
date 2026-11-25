@@ -151,6 +151,30 @@ router.put('/:id', async (req, res) => {
 
 
 
+// Quick switch login for development/directory
+router.post('/switch', jwtAuthMiddleware, async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const targetUser = await User.findById(userId);
+        if (!targetUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const payload = {
+            id: targetUser.id,
+            name: targetUser.name,
+            email: targetUser.email,
+            role: targetUser.role
+        };
+
+        const token = generatetoken(payload);
+        return res.status(200).json({ message: 'Switched user successfully', user: targetUser, token });
+    } catch (err) {
+        console.error('User switch error:', err);
+        return res.status(500).json({ message: err.message || 'Internal server error' });
+    }
+});
+
 router.delete('/:id', async (req, res) => {
 
     try {

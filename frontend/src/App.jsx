@@ -4,6 +4,7 @@ import Auth from './Auth';
 import Jobs from './Jobs';
 import MyApplications from './MyApplications';
 import Dashboard from './Dashboard';
+import TeamDirectory from './TeamDirectory';
 
 function Guard({ role, children }) {
   const { user } = useAuth();
@@ -42,6 +43,9 @@ export default function App() {
               <NavLink to="/jobs">Find Jobs</NavLink>
               <NavLink to="/applications">My Applications</NavLink>
             </>
+          )}
+          {user && (
+            <NavLink to="/team">Team Directory</NavLink>
           )}
         </nav>
 
@@ -84,6 +88,7 @@ export default function App() {
           <Route path="/jobs" element={<Guard role="jobseeker"><Jobs /></Guard>} />
           <Route path="/applications" element={<Guard role="jobseeker"><MyApplications /></Guard>} />
           <Route path="/dashboard" element={<Guard role="employer"><Dashboard /></Guard>} />
+          <Route path="/team" element={user ? <TeamDirectory /> : <Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to={home} replace />} />
         </Routes>
       </main>
